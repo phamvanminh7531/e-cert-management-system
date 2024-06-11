@@ -11,3 +11,17 @@ def calculate_hash(data, hash_function: str = "sha256") -> str:
         h = RIPEMD160.new()
         h.update(data)
         return h.hexdigest()
+
+def verifyMerkleProof(txid, proof, root):
+        
+        sumHash = calculate_hash(txid)
+        
+        for hashNode in proof[:-1]:
+            hash = hashNode[0]
+            isLeft = hashNode[1]
+            if isLeft:
+                sumHash = calculate_hash(hash + sumHash)
+            else:
+                sumHash = calculate_hash(sumHash + hash)
+
+        return sumHash == root

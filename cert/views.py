@@ -13,6 +13,7 @@ from django.conf import settings
 import json
 from blockchain.node import Node
 from blockchain.transaction import Transaction
+from blockchain.utils import verifyMerkleProof
 
 def error_page(request):
     return render(request, 'cert/error_page.html')
@@ -220,18 +221,20 @@ def cert_verify(request, txid):
     try:
         BLOCKCHAIN_NETWORK = settings.BLOCKCHAIN_NETWORK
         cert = Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).get_transaction(txid = txid)
-        context["cert"] = cert["transaction"]["data"]
-
-        absolute_url = request.build_absolute_uri('/')
-        app2_detail_url = reverse('cert_app:cert_verify', kwargs={'txid': txid})
-        qr_image = qrcode.make(absolute_url + app2_detail_url, box_size=2)
-        qr_image_pil = qr_image.get_image()
-        stream = BytesIO()
-        qr_image_pil.save(stream, format='PNG')
-        qr_image_data = stream.getvalue()
-        qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
-        context['qr_image_base64'] = qr_image_base64
-        context['txid'] = txid
+        if verifyMerkleProof(cert["transaction"]["txid"], cert["merkle_proof"], cert["merkle_root"]) == True:
+            context["cert"] = cert["transaction"]["data"]
+            absolute_url = request.build_absolute_uri('/')
+            app2_detail_url = reverse('cert_app:cert_verify', kwargs={'txid': txid})
+            qr_image = qrcode.make(absolute_url + app2_detail_url, box_size=2)
+            qr_image_pil = qr_image.get_image()
+            stream = BytesIO()
+            qr_image_pil.save(stream, format='PNG')
+            qr_image_data = stream.getvalue()
+            qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
+            context['qr_image_base64'] = qr_image_base64
+            context['txid'] = txid
+        else:
+            return redirect('cert_app:error_page')
     except:
         return redirect('cert_app:error_page')
     return render(request, 'cert/cert_verify.html', context=context)

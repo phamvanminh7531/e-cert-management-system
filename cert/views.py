@@ -222,7 +222,7 @@ def cert_verify(request, txid):
         cert = Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).get_transaction(txid = txid)
         context["cert"] = cert["transaction"]["data"]
 
-        absolute_url = request.build_absolute_uri()
+        absolute_url = request.build_absolute_uri('/')
         app2_detail_url = reverse('cert_app:cert_verify', kwargs={'txid': txid})
         qr_image = qrcode.make(absolute_url + app2_detail_url, box_size=2)
         qr_image_pil = qr_image.get_image()

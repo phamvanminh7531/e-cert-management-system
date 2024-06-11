@@ -1,0 +1,74 @@
+{% extends "cert/base.html" %}
+{% load static %}
+{% block header %}
+{% endblock %}
+{% block content %}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Explorer Connect To {{ BLOCKCHAIN_NETWORK.CURRENT_CONNECT_NODE }}</h1>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex align-items-center">
+            <form method="POST" class="form-inline" action="{% url 'cert_app:explorer' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="defaultSelect" class="me-2">Chọn Data Node</label>
+                    <select class="form-control form-control" id="defaultSelect" name="hostname">
+                        <option selected>Chọn Data Node</option>
+                        {% for node in BLOCKCHAIN_NETWORK.DATA_NODES %}
+                            <option value="{{ node.hostname }}">{{ node }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Kết Nối</button>
+            </form>
+            <a href="{% url 'blockchain_app:get_data_node' %}" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-check"></i>
+                </span>
+                <span class="text">Reload Data Node List</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <div class="d-flex align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Ledger</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- <div class="overflow-auto">{{ blockchain }}</div> -->
+                <div class="overflow-auto" style="height: 40vh;">
+                    <pre class="overflow-auto">{{ blockchain | linebreaks }}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <div class="d-flex align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Pool</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="overflow-auto" style="height: 30vh;">
+                    <pre >{{ pool | linebreaks }}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+{% endblock %}

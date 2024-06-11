@@ -1,0 +1,11 @@
+----System Admin----
+11111111|123456789
+
+----Teacher Account----
+19050000|01Ac56789
+
+----Student Account----
+19050026|01Ac56789
+
+----Admin Account----
+22222222|01Ac56789

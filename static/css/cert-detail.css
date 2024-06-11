@@ -1,0 +1,7 @@
+.logo-img {
+    object-fit: cover;
+    text-decoration: none !important;
+    width: 10vh;
+    height: auto;
+    margin: auto;
+}

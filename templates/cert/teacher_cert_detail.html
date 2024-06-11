@@ -1,0 +1,130 @@
+{% extends "cert/base.html" %}
+{% load static %}
+{% block header %}
+<link href="{% static 'css/cert-detail.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-bordered"  width="100%" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <th class="align-middle">Tên Chứng Chỉ</th>
+                        <th class="align-middle">{{ cert_header.subject_name }}</th>
+                    </tr>
+                    <tr>
+                        <th class="align-middle">Mã Giảng Viên Phụ Trách</th>
+                        <th class="align-middle">{{ cert_header.teacher.user_code }}</th>
+                    </tr>
+                    <tr>
+                        <th class="align-middle">Tên Giảng Viên Phụ Trách</th>
+                        <th class="align-middle">{{ cert_header.teacher.full_name }}</th>
+                    </tr>
+                    <tr>
+                        <th class="align-middle">Logo</th>
+                        <th class="align-middle"><img class="logo-img" src="{{ cert_header.logo_image.url }}" alt=""></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <div class="d-flex align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Danh Sách Chứng Chỉ</h6>
+                    <a class="btn btn-success btn-round ml-auto" href="{% url 'cert_app:teacher_sign_cert_header' cert_header.id %}">
+                        <i class="fa fa-plus"></i>
+                        Ký Duyệt
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="certTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="align-middle">Mã Sinh Viên</th>
+                                <th>Họ Và Tên Sinh Viên</th>
+                                <th>Điểm</th>
+                                <th>Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cert in cert_list %}
+                                <tr>
+                                    <th class="align-middle">{{ cert.cert_data.student_code }}</th>
+                                    <th class="align-middle">{{ cert.cert_data.student_name }}</th>
+                                    {% if cert.cert_data.type ==  "mark" %}
+                                    <th class="align-middle">{{ cert.cert_data.mark }}</th>
+                                    {% else %}
+                                    <th></th>
+                                    {% endif %}
+                                    {% if cert.is_signed == True %}
+                                    <th class="text-center">
+                                        <a href="" class="btn btn-success btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                            <span class="text">Đã Ký</span>
+                                        </a>
+                                    </th>
+                                    {% else %}
+                                    <th class="text-center">
+                                        <a href="" class="btn btn-warning btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </span>
+                                            <span class="text">Chưa Ký</span>
+                                        </a>
+                                    </th>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+  $('#certTable').DataTable();
+});
+</script>
+
+<script>
+    function toggleInput(checkbox) {
+        var input = document.getElementById('mark');
+        if (checkbox.checked) {
+                enableInput(input);
+            } else {
+                disableInput(input);
+            }
+    }
+
+            // Function to enable the input
+    function enableInput(input) {
+            input.disabled = false;
+    }
+
+        // Function to disable the input
+        function disableInput(input) {
+            input.disabled = true;
+    }
+</script>
+
+{% endblock %}

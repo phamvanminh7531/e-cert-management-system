@@ -1,0 +1,70 @@
+{% extends "cert/base.html" %}
+{% load static %}
+{% block header %}
+
+{% endblock %}
+{% block content %}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Student Home Page</h1>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-bordered"  width="100%" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <th class="align-middle">Họ Và Tên</th>
+                        <th class="align-middle">{{ student.full_name }}</th>
+                    </tr>
+                    <tr>
+                        <th class="align-middle">Mã Sinh Viên</th>
+                        <th class="align-middle">{{ student.user_code }}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="d-sm-flex align-items-center justify-content-between my-4 text-center" >
+    <h1 class="h3 mb-0 text-gray-800">Danh Sách Chứng Chỉ Của Sinh Viên</h1>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for cert in cert_list %}
+    <div class="col">
+        <div class="card h-100">
+          <img src="{{  cert.header.logo_image.url }}" class="card-img-top" alt="..." style="object-fit: cover;
+          text-decoration: none !important;
+          width: 20vh;
+          height: auto;
+          margin: auto;">
+          <div class="card-body">
+            <h4 class="card-title">{{ cert.header.subject_name }}</h4>
+          </div>
+          <div class="card-footer text-center">
+            <a href="{% url 'cert_app:cert_verify' cert.transaction.txid %}" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-check"></i>
+                </span>
+                <span class="text">Chi Tiết</span>
+            </a>
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+  $('#certTable').DataTable();
+});
+</script>
+
+{% endblock %}

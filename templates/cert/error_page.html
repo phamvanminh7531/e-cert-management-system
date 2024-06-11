@@ -1,0 +1,17 @@
+{% extends "cert/base.html" %}
+{% load static %}
+{% block header %}
+{% endblock %}
+{% block content %}
+<!-- 404 Error Text -->
+<div class="text-center">
+    <div class="error mx-auto" data-text="404">404</div>
+    <p class="lead text-gray-800 mb-5">Page Not Found</p>
+    <p class="text-gray-500 mb-0">Đã có lỗi xảy ra!!</p>
+    <p class="text-gray-500 mb-0">{{ message }}</p>
+    <a href="/">&larr; Quay Về Trang Chủ</a>
+</div>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

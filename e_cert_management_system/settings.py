@@ -54,6 +54,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://e-cert-management-sys.azurewebsites.net'
+]
+
 ROOT_URLCONF = 'e_cert_management_system.urls'
 
 TEMPLATES = [

@@ -22,6 +22,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
+    path('api/', include('api.urls')),
     path('', include('cert.urls')),
     path('blockchain/', include('blockchain.urls')),
 

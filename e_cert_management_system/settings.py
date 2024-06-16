@@ -41,8 +41,20 @@ INSTALLED_APPS = [
     'account',
     'cert',
     'rest_framework',
+    'rest_framework_simplejwt',
     'django_cleanup.apps.CleanupConfig',
 ]
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',],
+    # 'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny',],
+    
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -139,8 +151,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
 
 BLOCKCHAIN_NETWORK = {
-    "FIRST_KNOW_NODE_HOSTNAME" : "20.11.67.142",
-    "CURRENT_CONNECT_NODE" : "20.11.67.142",
+    "FIRST_KNOW_NODE_HOSTNAME" : "127.0.0.1:8000",
+    "CURRENT_CONNECT_NODE" : "127.0.0.1:8000",
     "MY_HOSTNAME" : "",
     "DATA_NODES" : []
 }

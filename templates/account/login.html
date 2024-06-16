@@ -10,18 +10,20 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
         <style>
-                    body {
+            body {
                         background: linear-gradient(
                                 140deg,
                                 hsl(120deg 87% 88%) 0%,
                                 hsl(189deg 100% 79%) 44%,
                                 hsl(251deg 100% 91%) 100%
                         );
-                    }
-
-                                .formRow {
+                    }.formRow {
                 position: relative;
                 width: 100%;
+            }
+
+            .head-title {
+                background-color: #ffffff;
             }
 
             .formRow--item {
@@ -90,23 +92,18 @@
             .card-img-top{
                        border-radius: 15px 15px 0px 0px;
              }
-            @media only screen and (max-width: 767px)
-            {
-                #toppk{
-                    height: 10vh;
-                }
-            }
-            @media only screen and (min-width: 768px)
-            {
-                #toppk{
-                    height: 20vh;
-                }
-            }
         </style>
     </head>
     <body style="height: 100vh;">
-        <div class="container text-center">
-            <div id="toppk"></div>
+        <div class="container text-center mt-3">
+            <div class="row head-title justify-content-center text-center">
+                <div class="col-sm-12 m-2">
+                    <h3 class="text-primary text-justify font-weight-bold text-center">KHOA CÔNG NGHỆ THÔNG TIN, ROBOT VÀ TRÍ TUỆ NHÂN TẠO</h3>     
+                    <h3 class="text-success text-justify font-weight-bold text-center">ĐỒ ÁN TỐT NGHIỆP</h3>  
+                    <h2 class="text-danger text-justify font-weight-bold text-center">HỆ THỐNG XÁC THỰC CHỨNG CHỈ MÔN HỌC BẰNG CÔNG NGHỆ BLOCKCHAIN</h2> 
+                    <h4 style="font-size:30;color: black;">SINH VIÊN THỰC HIỆN: PHẠM VĂN MINH</p> 
+                </div>
+            </div>
             <div class="row justify-content-center">
                 <div class=" col-xl-4 col-xl-5 col-lg-6 col-md-11 col-sm-12 m-2">
                     <div class="shadow card rounded-4">
@@ -134,7 +131,6 @@
                             {% for message in messages %}
                             <p id="messages">{{message}}</p>
                             {% endfor %}
-                            <p class="text-right pb-5"><a href="/account/register/" class="text-primary"> Đăng ký tài khoản </a></p>
                         </div>
                     </div>
                 </div>

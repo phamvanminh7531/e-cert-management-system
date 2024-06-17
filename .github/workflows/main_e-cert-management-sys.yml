@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'e-cert-management-sys'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F5FB1B50CC954874ADD88438326FD737 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8BF6C48F6FE649A4BE2718848CDA43D0 }}

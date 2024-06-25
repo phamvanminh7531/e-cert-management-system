@@ -21,7 +21,7 @@ class Node:
             req_return = requests.post(url, json=data)
         else:
             req_return = requests.post(url)
-        req_return.raise_for_status()
+        # req_return.raise_for_status()
         return req_return
 
     def get(self, endpoint: str, data: dict = None) -> list:
@@ -30,7 +30,7 @@ class Node:
             req_return = requests.get(url, json=data)
         else:
             req_return = requests.get(url)
-        req_return.raise_for_status()
+        # req_return.raise_for_status()
         return req_return.json()
 
     def advertise(self, hostname: str):

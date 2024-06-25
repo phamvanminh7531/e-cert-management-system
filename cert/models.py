@@ -6,7 +6,7 @@ class CertHeader(models.Model):
     subject_name = models.CharField(max_length = 50, null = False)
     teacher = models.ForeignKey(User, on_delete = models.CASCADE, blank = False)
     is_signed_all = models.BooleanField(default=False)
-    logo_image = models.FileField(upload_to='cert_logo/')
+    logo_image = models.FileField(upload_to='cert_logo/', blank=True, null=True)
 
     def __str__(self) -> str:
         return self.subject_name

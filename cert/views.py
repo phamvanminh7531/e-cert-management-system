@@ -28,6 +28,10 @@ def home(request):
         signed_cert_header = CertHeader.objects.filter(teacher = User.objects.get(id = user.id), is_signed_all = True)
         context['cert_headers'] = cert_headers
         context['signed_cert_header'] = signed_cert_header
+        if user.private_key.name:
+            context['alert'] = True
+        else:
+            context['alert'] = False
         return render(request, 'cert/teacher_home.html', context=context)
     elif user.is_admin == True:
         teacher_list = User.objects.filter(is_teacher = True)
@@ -95,7 +99,10 @@ def add_cert_header(request):
     if request.method == "POST":
         teacher = User.objects.get(id = request.POST.get('teacher_id'))
         name = request.POST.get('cert_name')
-        uploaded_file = request.FILES['uploaded_file']
+        try:
+            uploaded_file = request.FILES['uploaded_file']
+        except:
+            uploaded_file = None
         CertHeader(subject_name = name, teacher = teacher, logo_image = uploaded_file).save()
         return redirect('cert_app:home')
 
@@ -121,6 +128,7 @@ def add_cert(request, pk):
             mark = None
         cert_data = {}
         if mark != None:
+            cert_data["store"] = "certificate"
             cert_data["cert_id"] = cert_header.id
             cert_data["cert_name"] = cert_header.subject_name
             cert_data["student_code"] = student.user_code
@@ -132,6 +140,7 @@ def add_cert(request, pk):
             Cert(cert_header = cert_header, cert_data = cert_data).save()
             return redirect(request.META.get('HTTP_REFERER'))
         else:
+            cert_data["store"] = "certificate"
             cert_data["cert_id"] = cert_header.id
             cert_data["cert_name"] = cert_header.subject_name
             cert_data["student_code"] = student.user_code
@@ -145,20 +154,25 @@ def add_cert(request, pk):
 @login_required(login_url='account_app:login')
 def teacher_cert_detail(request, pk):
     context = {}
-    print(request.session.get('user_code'))
     cert_header = CertHeader.objects.get(id = pk)
+    qr_image = qrcode.make(cert_header.id, box_size=10)
+    qr_image_pil = qr_image.get_image()
+    stream = BytesIO()
+    qr_image_pil.save(stream, format='PNG')
+    qr_image_data = stream.getvalue()
+    qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
     cert_list = cert_header.cert_set.all()
     context["cert_list"] = cert_list
     context["cert_header"] = cert_header
+    context['qr_image_base64'] = qr_image_base64
     return render(request, 'cert/teacher_cert_detail.html', context=context)
 
 @login_required(login_url='account_app:login')
 def teacher_sign_cert_header(request, pk):
     BLOCKCHAIN_NETWORK = settings.BLOCKCHAIN_NETWORK
     cert_header = CertHeader.objects.get(id = pk)
-    user_code = request.session.get('user_code')
-    teacher = User.objects.get(user_code = user_code)
-    if cert_header.teacher.user_code == user_code:
+    teacher = request.user
+    if cert_header.teacher.user_code == teacher.user_code:
         public_key = teacher.public_key
         f = teacher.private_key.open('r')
         private_key = RSA.import_key(f.read())
@@ -170,15 +184,15 @@ def teacher_sign_cert_header(request, pk):
                     transaction_data_byte = json.dumps(cert.cert_data, indent=2).encode('utf-8')
                     hasher = SHA256.new(transaction_data_byte)
                     signature = signer.sign(hasher).hex()
-                    cert.cert_data["signature"] = signature
-                    cert.cert_data["public_key"] = public_key
-                    cert.save()
-                    transaction = Transaction(cert.cert_data)
-                    Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).send_transaction({"transaction": transaction.transaction_data, "sender": "e-cert-management-sys"})
+                    transaction = Transaction(data=cert.cert_data, signature=signature, public_key=public_key)
+                    response = Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).send_transaction({"transaction": transaction.transaction_data, "sender": "e-cert-management-sys"})
                 except:
                     continue
-                cert.is_signed = True
-                cert.save()
+                if response.status_code == 200:
+                    cert.is_signed = True
+                    cert.save()
+                else:
+                    break
             else:
                 continue
         else:

@@ -85,6 +85,21 @@
     </div>
 </div>
 
+<!-- Modal Alert -->
+<div class="modal fade" id="teacherAlert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cảnh Báo Bảo Mật</h5>
+            </div>
+            <div class="modal-body">
+                <h3>Giảng viên vui lòng đăng nhập vào App sau đó chuyển MÃ KHÓA của mình về điện thoại để đảm bảo tính bảo mật!!</h3>
+                <a href="/" class="btn btn-primary">Đã thực hiện</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 {% block js %}
 <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
@@ -93,6 +108,25 @@
     $(document).ready(function() {
   $('#certTable').DataTable();
 });
+</script>
+    
+<script>
+    $(document).ready(function() {
+        $('#certTable').DataTable();
+    });
+
+    // Ensure the alert variable is converted to a JavaScript boolean
+    var alert = "{{ alert }}";
+    console.log(alert);
+    if (alert === "True") {
+        $(document).ready(function () {
+            $("#teacherAlert").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $("#teacherAlert").modal('show');
+        });
+    }
 </script>
 
 {% endblock %}

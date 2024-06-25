@@ -18,7 +18,6 @@ def login_page(request):
 
             if user is not None:
                 login(request, user)
-                request.session['user_code'] = user.user_code
                 return redirect('cert_app:home')
             else:
                 messages.info(request, 'Username OR password is incorrect')

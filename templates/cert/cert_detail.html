@@ -25,10 +25,12 @@
                         <th class="align-middle">Tên giảng viên phụ trách</th>
                         <th class="align-middle">{{ cert_header.teacher.full_name }}</th>
                     </tr>
+                    {% if cert_header.logo_image %}
                     <tr>
                         <th class="align-middle">Logo</th>
                         <th class="align-middle"><img class="logo-img" src="{{ cert_header.logo_image.url }}" alt=""></th>
                     </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>

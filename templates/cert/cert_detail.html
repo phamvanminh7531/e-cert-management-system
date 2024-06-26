@@ -46,6 +46,10 @@
                         <i class="fa fa-plus"></i>
                         Tạo Mới Chứng Chỉ
                     </button>
+                    <button class="btn btn-success btn-round ml-auto" data-toggle="modal" data-target="#addCertByFile">
+                        <i class="fa fa-plus"></i>
+                        Nhập danh sách chứng chỉ
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -103,7 +107,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Thêm Teacher</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Thêm chứng chỉ</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -142,6 +146,38 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Add Cert By File -->
+<div class="modal fade" id="addCertByFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm chứng chỉ bằng danh sách</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST"  action="{% url 'cert_app:add_cert_by_file' cert_header.id %}" enctype="multipart/form-data">
+                <div class="modal-body">
+                    
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="largeInput">File danh sách điểm</label>
+                            <input type="file" class="form-control form-control" id="file" placeholder="" name="file">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <div class="form-group">
+                        <button type="submit" class="form-control form-control btn btn-primary">Thêm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}
 {% block js %}
 <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>

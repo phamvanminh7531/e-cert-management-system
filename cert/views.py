@@ -14,6 +14,7 @@ import json
 from blockchain.node import Node
 from blockchain.transaction import Transaction
 from blockchain.utils import verifyMerkleProof
+import pandas as pd
 
 def error_page(request):
     return render(request, 'cert/error_page.html')
@@ -150,6 +151,46 @@ def add_cert(request, pk):
             cert_data["type"] = "no-mark"
             Cert(cert_header = cert_header, cert_data = cert_data).save()
             return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='account_app:login')
+def add_cert_by_file(request, pk):
+    if request.method == "POST":
+        if 'file' in request.FILES:
+            cert_header = CertHeader.objects.get(id = pk)
+            excel_file = request.FILES['file']
+            df = pd.read_excel(excel_file)
+            for index, row in df.iterrows():
+                student_code = row.get('student_code')
+                mark = row.get('mark')
+                try:
+                    student = User.objects.get(user_code=student_code)
+                except User.DoesNotExist:
+                    return render(request, 'cert/error_page.html', context={"message" : "Không tìm thấy sinh viên"})
+                
+                cert_data = {
+                    "store": "certificate",
+                    "cert_id": cert_header.id,
+                    "cert_name": cert_header.subject_name,
+                    "student_code": student.user_code,
+                    "student_name": student.full_name,
+                    "teacher_code": cert_header.teacher.user_code,
+                    "teacher_name": cert_header.teacher.full_name,
+                    "type": "mark" if pd.notna(mark) else "no-mark",
+                    "mark": mark if pd.notna(mark) else None,
+                }
+
+                """
+                Check cert is exits based on student_code
+                """
+                if Cert.objects.filter(cert_data__student_code=str(student_code)).exists():
+                    continue
+                else:
+                    Cert(cert_header = cert_header, cert_data = cert_data).save()
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            return render(request, 'cert/error_page.html', context={"message" : "Không tìm thấy file!"})
+            
+
 
 @login_required(login_url='account_app:login')
 def teacher_cert_detail(request, pk):

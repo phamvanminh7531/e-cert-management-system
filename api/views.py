@@ -44,39 +44,80 @@ class DeletePrivateKey(APIView):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
 
+# class TeacherSign(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def post(self, request, pk):
+#         BLOCKCHAIN_NETWORK = settings.BLOCKCHAIN_NETWORK
+#         cert_header = CertHeader.objects.get(id = pk)
+#         teacher = request.user
+#         if cert_header.teacher.user_code == teacher.user_code:
+#             public_key = teacher.public_key
+#             data = json.loads(request.body)
+#             private_key = RSA.import_key(data.get('privateKey'))
+#             signer = PKCS1_v1_5.new(private_key)
+#             cert_list = cert_header.cert_set.all()
+#             for cert in cert_list:
+#                 if cert.is_signed == False:
+#                     try:
+#                         transaction_data_byte = json.dumps(cert.cert_data, indent=2).encode('utf-8')
+#                         hasher = SHA256.new(transaction_data_byte)
+#                         signature = signer.sign(hasher).hex()
+#                         transaction = Transaction(data=cert.cert_data, signature=signature, public_key=public_key)
+#                         response = Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).send_transaction({"transaction": transaction.transaction_data, "sender": "e-cert-management-sys"})
+#                     except:
+#                         continue
+#                     if response.status_code == 200:
+#                         cert.is_signed = True
+#                         cert.save()
+#                     else:
+#                         break
+#                 else:
+#                     continue
+#             else:
+#                 cert_header.is_signed_all = True
+#                 cert_header.save()
+#                 return JsonResponse({'status': 'success'})
+#         else:
+#             return JsonResponse({'status': 'error'})
+
 class TeacherSign(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request, pk):
         BLOCKCHAIN_NETWORK = settings.BLOCKCHAIN_NETWORK
-        cert_header = CertHeader.objects.get(id = pk)
+        cert_header = CertHeader.objects.get(id=pk)
         teacher = request.user
-        if cert_header.teacher.user_code == teacher.user_code:
-            public_key = teacher.public_key
-            data = json.loads(request.body)
-            private_key = RSA.import_key(data.get('privateKey'))
-            signer = PKCS1_v1_5.new(private_key)
-            cert_list = cert_header.cert_set.all()
-            for cert in cert_list:
-                if cert.is_signed == False:
-                    try:
-                        transaction_data_byte = json.dumps(cert.cert_data, indent=2).encode('utf-8')
-                        hasher = SHA256.new(transaction_data_byte)
-                        signature = signer.sign(hasher).hex()
-                        transaction = Transaction(data=cert.cert_data, signature=signature, public_key=public_key)
-                        response = Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).send_transaction({"transaction": transaction.transaction_data, "sender": "e-cert-management-sys"})
-                    except:
-                        continue
+
+        if cert_header.teacher.user_code != teacher.user_code:
+            return JsonResponse({'status': 'error'})
+
+        public_key = teacher.public_key
+        data = json.loads(request.body)
+        private_key = RSA.import_key(data.get('privateKey'))
+        signer = PKCS1_v1_5.new(private_key)
+        cert_list = cert_header.cert_set.all()
+
+        for cert in cert_list:
+            if not cert.is_signed:
+                try:
+                    transaction_data_byte = json.dumps(cert.cert_data, indent=2).encode('utf-8')
+                    hasher = SHA256.new(transaction_data_byte)
+                    signature = signer.sign(hasher).hex()
+                    transaction = Transaction(data=cert.cert_data, signature=signature, public_key=public_key)
+                    response = Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).send_transaction({
+                        "transaction": transaction.transaction_data,
+                        "sender": "e-cert-management-sys"
+                    })
+
                     if response.status_code == 200:
                         cert.is_signed = True
                         cert.save()
                     else:
-                        break
-                else:
-                    continue
-            else:
-                cert_header.is_signed_all = True
-                cert_header.save()
-                return JsonResponse({'status': 'success'})
-        else:
-            return JsonResponse({'status': 'error'})
+                        return JsonResponse({'status': 'error', 'message': 'Failed to send transaction'})
+                except Exception as e:
+                    return JsonResponse({'status': 'error', 'message': str(e)})
+
+        cert_header.is_signed_all = True
+        cert_header.save()
+        return JsonResponse({'status': 'success'})
 

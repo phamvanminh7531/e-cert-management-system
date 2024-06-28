@@ -67,7 +67,9 @@ MIDDLEWARE = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://e-cert-management-sys.azurewebsites.net'
+    'https://e-cert-management-sys.azurewebsites.net',
+    'https://chungchiso.online',
+    'https://www.chungchiso.online'
 ]
 
 ROOT_URLCONF = 'e_cert_management_system.urls'

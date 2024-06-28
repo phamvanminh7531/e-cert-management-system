@@ -72,6 +72,10 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.chungchiso.online'
 ]
 
+# HTTPS Settings
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ROOT_URLCONF = 'e_cert_management_system.urls'
 
 TEMPLATES = [

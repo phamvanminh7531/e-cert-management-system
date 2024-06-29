@@ -14,6 +14,7 @@ import json
 from cert.models import Cert, CertHeader
 from blockchain.node import Node
 from blockchain.transaction import Transaction
+import time
 
 class GetPublicKey(APIView):
     permission_classes = [AllowAny]
@@ -108,7 +109,6 @@ class TeacherSign(APIView):
                         "transaction": transaction.transaction_data,
                         "sender": "e-cert-management-sys"
                     })
-
                     if response.status_code == 200:
                         cert.is_signed = True
                         cert.save()

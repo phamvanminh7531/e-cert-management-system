@@ -182,7 +182,7 @@ def add_cert_by_file(request, pk):
                 """
                 Check cert is exits based on student_code
                 """
-                if Cert.objects.filter(cert_data__student_code=str(student_code)).exists():
+                if Cert.objects.filter(cert_data__student_code=str(student_code), cert_header = cert_header).exists():
                     continue
                 else:
                     Cert(cert_header = cert_header, cert_data = cert_data).save()

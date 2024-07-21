@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from Crypto.PublicKey import RSA
 from django.core.files.base import ContentFile
+from blockchain.utils import calculate_hash
 
 class CustomAccountManager(BaseUserManager):
 
@@ -42,6 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     private_key = models.FileField(blank=True, null=True, upload_to='private_key/')
     public_key = models.TextField( blank=True, null=True)
+    public_key_hash = models.CharField(max_length=64, blank=True)
     objects = CustomAccountManager()
 
     USERNAME_FIELD = 'user_code'
@@ -56,6 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             public_key = key_pair.publickey().exportKey('DER').hex()
             private_key = key_pair.exportKey('PEM')
             file_content = ContentFile(private_key)
+            self.public_key_hash = calculate_hash(str(self.user_code)+public_key)
             self.public_key = public_key
             self.private_key.save(f'{self.user_code}_private_key.pem', file_content, save=False)
         super(User, self).save(*args, **kwargs)

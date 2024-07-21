@@ -4,10 +4,11 @@ from .utils import calculate_hash
 
 
 class Transaction():
-    def __init__(self, data: dict, signature, public_key):
+    def __init__(self, data: dict, signature, public_key, public_key_hash):
         self.data = data
         self.signature = signature
         self.public_key = public_key
+        self.public_key_hash = public_key_hash
         self.timestamp = datetime.timestamp(datetime.now())
         self.txid = self.get_transaction_hash()
     
@@ -26,6 +27,7 @@ class Transaction():
             "timestamp": self.timestamp,
             "data": self.data,
             "signature": self.signature,
-            "public_key": self.public_key
+            "public_key": self.public_key,
+            "public_key_hash": self.public_key_hash
         }
         return transaction_data

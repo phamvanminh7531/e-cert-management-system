@@ -141,10 +141,11 @@ class TeacherSign(APIView):
         for cert in cert_list:
             if not cert.is_signed:
                 try:
+                    print("sent")
                     transaction_data_byte = json.dumps(cert.cert_data, indent=2).encode('utf-8')
                     hasher = SHA256.new(transaction_data_byte)
                     signature = signer.sign(hasher).hex()
-                    transaction = Transaction(data=cert.cert_data, signature=signature, public_key=public_key)
+                    transaction = Transaction(data=cert.cert_data, signature=signature, public_key=public_key, public_key_hash=teacher.public_key_hash)
                     response = Node(hostname=BLOCKCHAIN_NETWORK["CURRENT_CONNECT_NODE"]).send_transaction({
                         "transaction": transaction.transaction_data,
                         "sender": "e-cert-management-sys"
@@ -153,7 +154,6 @@ class TeacherSign(APIView):
                     cert.save()
                 except Exception as e:
                     return JsonResponse({'status': 'error', 'message': str(e)})
-                
         cert_header.is_signed_all = True
         cert_header.save()
         return JsonResponse({'status': 'success'})

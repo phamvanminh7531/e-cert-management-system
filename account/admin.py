@@ -14,9 +14,9 @@ class UserAdminConfig(UserAdmin):
         (None, {'fields': ('user_code', 'full_name', 'date_of_birth')}),
         ('Permissions', {'fields': ('is_staff', 'is_active','is_teacher', 'is_student', 'is_admin')}),
         ('Password', {'fields': ('password',)}),
-        ('Teacher Key Pair', {'fields': ('private_key','public_key')}),
+        ('Teacher Key Pair', {'fields': ('private_key','public_key', 'public_key_hash')}),
     )
-    readonly_fields = ['private_key','public_key']
+    readonly_fields = ['private_key','public_key', 'public_key_hash']
     formfield_overrides = {
         models.TextField: {'widget': Textarea(attrs={'rows': 20, 'cols': 60})},
     }

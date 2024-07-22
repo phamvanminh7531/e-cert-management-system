@@ -74,7 +74,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 # HTTPS Settings
 # Set True on production
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = 'e_cert_management_system.urls'
@@ -158,8 +158,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
 
 BLOCKCHAIN_NETWORK = {
-    "FIRST_KNOW_NODE_HOSTNAME" : "127.0.0.1:8001",
-    "CURRENT_CONNECT_NODE" : "127.0.0.1:8001",
+    "FIRST_KNOW_NODE_HOSTNAME" : "48.217.169.254",
+    "CURRENT_CONNECT_NODE" : "48.217.169.254",
     "MY_HOSTNAME" : "",
     "DATA_NODES" : []
 }
